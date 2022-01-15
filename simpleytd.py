@@ -1,3 +1,4 @@
+# SimpleYTD by DominikSLK
 import tkinter as tk
 import os
 from moviepy.video.io.VideoFileClip import *
