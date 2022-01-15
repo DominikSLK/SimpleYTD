@@ -8,12 +8,22 @@ import time
 import re
 import threading
 import clipboard
+import unicodedata
 
 a2 = "NO"
 textclbef = ""
 
 def on_closing():
     exit()
+
+def slugify(value, allow_unicode=False):
+    value = str(value)
+    if allow_unicode:
+        value = unicodedata.normalize('NFKC', value)
+    else:
+        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
+    value = re.sub(r'[^\w\s-]', '', value.lower())
+    return value
 
 def download():  
     global a2
@@ -47,7 +57,9 @@ def download():
                     ys = yt.streams.get_highest_resolution()
                     ys.download()
                     
-                    videonameok = yt.title.replace(".", "").replace("|", "").replace("/", "").replace(":", "").replace(",", "").replace("'", "").replace('"', '')
+                    videonameok = slugify(yt.title)
+
+                    #videonameok = yt.title.replace(".", "").replace("|", "").replace("/", "").replace(":", "").replace(",", "").replace("'", "").replace('"', '')
                     if (var1.get() == 1):
                         button['text'] = "Converting..."
                         window.update()
