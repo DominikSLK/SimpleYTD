@@ -205,12 +205,10 @@ def download1():
     a2 = "YES"
 
 def c2():
-    if (var3.get() == 1):
-        c3.deselect()
+    c3.deselect()
 
 def c3():
-    if (var3.get() == 1):
-        c2.deselect()
+    c2.deselect()
 
 a = threading.Thread(target=download, daemon = True)
 a.start()
