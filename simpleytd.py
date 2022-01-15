@@ -55,9 +55,10 @@ def download():
                     window.update()
 
                     ys = yt.streams.get_highest_resolution()
-                    ys.download()
-                    
-                    videonameok = slugify(yt.title)
+
+                    videonameok = slugify(yt.title) + ""
+
+                    ys.download(filename=videonameok + ".mp4")
 
                     #videonameok = yt.title.replace(".", "").replace("|", "").replace("/", "").replace(":", "").replace(",", "").replace("'", "").replace('"', '')
                     if (var1.get() == 1):
@@ -110,9 +111,11 @@ def download():
                         window.update()
 
                         ys = yt.streams.get_highest_resolution()
-                        ys.download()
-                        
-                        videonameok = yt.title.replace(".", "").replace("|", "").replace("/", "").replace(":", "").replace(",", "")
+
+                        videonameok = slugify(yt.title) + ""
+
+                        ys.download(filename=videonameok + ".mp4")
+
                         if (var1.get() == 1):
                             button['text'] = "Converting..."
                             window.update()
@@ -165,7 +168,10 @@ def download():
                         window.update()
 
                         ys = yt.streams.get_highest_resolution()
-                        ys.download()
+
+                        videonameok = slugify(yt.title) + ""
+
+                        ys.download(filename=videonameok + ".mp4")
                         
                         videonameok = yt.title.replace(".", "").replace("|", "").replace("/", "").replace(":", "").replace(",", "")
                         if (var1.get() == 1):
