@@ -16,15 +16,6 @@ textclbef = ""
 def on_closing():
     exit()
 
-def slugify(value, allow_unicode=True):
-    value = str(value)
-    if allow_unicode:
-        value = unicodedata.normalize('NFKC', value)
-    else:
-        value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('ascii')
-    value = re.sub(r'[^\w\s-]', '', value.lower())
-    return value
-
 def download():  
     global a2
     global textclbef
@@ -56,11 +47,10 @@ def download():
 
                     ys = yt.streams.get_highest_resolution()
 
-                    videonameok = slugify(yt.title) + ""
+                    videonameok = ys.default_filename.replace(".mp4", "")
 
-                    ys.download(filename=videonameok + ".mp4")
+                    ys.download()
 
-                    #videonameok = yt.title.replace(".", "").replace("|", "").replace("/", "").replace(":", "").replace(",", "").replace("'", "").replace('"', '')
                     if (var1.get() == 1):
                         button['text'] = "Converting..."
                         window.update()
@@ -112,9 +102,9 @@ def download():
 
                         ys = yt.streams.get_highest_resolution()
 
-                        videonameok = slugify(yt.title) + ""
+                        videonameok = ys.default_filename.replace(".mp4", "")
 
-                        ys.download(filename=videonameok + ".mp4")
+                        ys.download()
 
                         if (var1.get() == 1):
                             button['text'] = "Converting..."
@@ -169,9 +159,9 @@ def download():
 
                         ys = yt.streams.get_highest_resolution()
 
-                        videonameok = slugify(yt.title) + ""
+                        videonameok = ys.default_filename.replace(".mp4", "")
 
-                        ys.download(filename=videonameok + ".mp4")
+                        ys.download()
                         
                         videonameok = yt.title.replace(".", "").replace("|", "").replace("/", "").replace(":", "").replace(",", "")
                         if (var1.get() == 1):
