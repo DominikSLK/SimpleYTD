@@ -16,7 +16,7 @@ textclbef = ""
 def on_closing():
     exit()
 
-def slugify(value, allow_unicode=False):
+def slugify(value, allow_unicode=True):
     value = str(value)
     if allow_unicode:
         value = unicodedata.normalize('NFKC', value)
