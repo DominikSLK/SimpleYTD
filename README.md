@@ -2,4 +2,4 @@
 Simple Youtube Downloader
 
 # Screenshots
-https://funprogramming.eu/NGIfHZ.png
+![](https://funprogramming.eu/NGIfHZ.png)
