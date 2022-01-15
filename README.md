@@ -1,8 +1,7 @@
 # Simple Youtube Downloader
 Simple Youtube Downloader
 
-# Screenshots
-Installation
+# Installation
 
 ```
 Windows:
