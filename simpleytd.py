@@ -9,7 +9,7 @@ import time
 import re
 import threading
 import clipboard
-import unicodedata
+from tkinter import filedialog
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path("./assets")
@@ -19,6 +19,7 @@ def relative_to_assets(path: str) -> Path:
 
 a2 = "NO"
 textclbef = ""
+folderpath = ""
 
 def on_closing():
     window.destroy()
@@ -27,20 +28,9 @@ def on_closing():
 def download():  
     global a2
     global textclbef
+    global folderpath
     time.sleep(1)
     while True:
-        textcl = clipboard.paste()
-        if (textcl == textclbef):
-            pass
-        elif(textcl.find("youtube") != -1):
-            entry.delete(0, tk.END)
-            entry.insert(0, textcl)
-            time.sleep(1)
-            window.update()
-            textclbef = textcl
-        else:
-            entry.delete(0, tk.END)
-            textclbef = textcl
         if a2 == "YES":
             link = entry.get()
             
@@ -57,13 +47,13 @@ def download():
 
                     videonameok = ys.default_filename.replace(".mp4", "")
 
-                    ys.download()
+                    ys.download(folderpath)
 
                     if (var1.get() == 1):
                         button['text'] = "Converting..."
                         window.update()
-                        video = VideoFileClip(os.path.join("","",f"{videonameok}.mp4"))
-                        video.audio.write_audiofile(os.path.join("","",f"{videonameok}.mp3"))
+                        video = VideoFileClip(os.path.join(folderpath,"",f"{videonameok}.mp4"))
+                        video.audio.write_audiofile(os.path.join(folderpath,"",f"{videonameok}.mp3"))
 
                     button['text'] = "Download"
                     window.update()
@@ -112,13 +102,13 @@ def download():
 
                         videonameok = ys.default_filename.replace(".mp4", "")
 
-                        ys.download()
+                        ys.download(folderpath)
 
                         if (var1.get() == 1):
                             button['text'] = "Converting..."
                             window.update()
-                            video = VideoFileClip(os.path.join("","",f"{videonameok}.mp4"))
-                            video.audio.write_audiofile(os.path.join("","",f"{videonameok}.mp3"))
+                            video = VideoFileClip(os.path.join(folderpath,"",f"{videonameok}.mp4"))
+                            video.audio.write_audiofile(os.path.join(folderpath,"",f"{videonameok}.mp3"))
 
                         button['text'] = "Download"
                         window.update()
@@ -169,14 +159,14 @@ def download():
 
                         videonameok = ys.default_filename.replace(".mp4", "")
 
-                        ys.download()
+                        ys.download(folderpath)
                         
                         videonameok = yt.title.replace(".", "").replace("|", "").replace("/", "").replace(":", "").replace(",", "")
                         if (var1.get() == 1):
                             button['text'] = "Converting..."
                             window.update()
-                            video = VideoFileClip(os.path.join("","",f"{videonameok}.mp4"))
-                            video.audio.write_audiofile(os.path.join("","",f"{videonameok}.mp3"))
+                            video = VideoFileClip(os.path.join(folderpath,"",f"{videonameok}.mp4"))
+                            video.audio.write_audiofile(os.path.join(folderpath,"",f"{videonameok}.mp3"))
 
                         button['text'] = "Download"
                         window.update()
@@ -200,8 +190,9 @@ def download():
                     label.config(fg="black")
                     label['text'] = "Link"
                     window.update()
-
+   
             entry.config(state='normal')
+            entry.delete(0, tk.END)
             a2 = "NO"
 
 def download1():
@@ -214,6 +205,70 @@ def c2():
 def c3():
     c2.deselect()
 
+def selectfolder():
+    global folderpath
+    folderpath = filedialog.askdirectory()
+    button2_ttp = CreateToolTip(button2, "Selected folder: " + folderpath)
+
+class CreateToolTip(object):
+    def __init__(self, widget, text='widget info'):
+        self.waittime = 500
+        self.wraplength = 180
+        self.widget = widget
+        self.text = text
+        self.widget.bind("<Enter>", self.enter)
+        self.widget.bind("<Leave>", self.leave)
+        self.widget.bind("<ButtonPress>", self.leave)
+        self.id = None
+        self.tw = None
+
+    def enter(self, event=None):
+        self.schedule()
+
+    def leave(self, event=None):
+        self.unschedule()
+        self.hidetip()
+
+    def schedule(self):
+        self.unschedule()
+        self.id = self.widget.after(self.waittime, self.showtip)
+
+    def unschedule(self):
+        id = self.id
+        self.id = None
+        if id:
+            self.widget.after_cancel(id)
+
+    def showtip(self, event=None):
+        x = y = 0
+        x, y, cx, cy = self.widget.bbox("insert")
+        x += self.widget.winfo_rootx() + 25
+        y += self.widget.winfo_rooty() + 20
+
+        self.tw = tk.Toplevel(self.widget)
+
+        self.tw.wm_overrideredirect(True)
+        self.tw.wm_geometry("+%d+%d" % (x, y))
+        label = tk.Label(self.tw, text=self.text, justify='left',
+                       background="#ffffff", relief='solid', borderwidth=1,
+                       wraplength = self.wraplength)
+        label.pack(ipadx=1)
+
+    def hidetip(self):
+        tw = self.tw
+        self.tw= None
+        if tw:
+            tw.destroy()
+
+def pastelink(a):
+    textcl = clipboard.paste()
+    if(textcl.find("youtube") != -1):
+        entry.delete(0, tk.END)
+        entry.insert(0, textcl)
+        window.update()
+    else:
+        entry.delete(0, tk.END)
+
 a = threading.Thread(target=download, daemon = True)
 a.start()
 
@@ -225,7 +280,8 @@ label = tk.Label(text="Link")
 entry = tk.Entry(width=95)
 label.pack()
 entry.pack()
-window.geometry("600x160")
+entry.bind("<Enter>", pastelink)
+window.geometry("600x200")
 name = entry.get()
 button = tk.Button(
     text="Download",
@@ -236,6 +292,15 @@ button = tk.Button(
     command=download1
 )
 button.pack(pady=(10, 10))
+button2 = tk.Button(
+    text="Select Download Folder",
+    width=19,
+    height=1,
+    bg="grey",
+    fg="white",
+    command=selectfolder
+)
+button2.pack(pady=(1, 10))
 var1 = tk.IntVar()
 var2 = tk.IntVar()
 var3 = tk.IntVar()
@@ -245,4 +310,6 @@ c2 = tk.Checkbutton(window, text='Playlist?',variable=var2, onvalue=1, offvalue=
 c2.pack()
 c3 = tk.Checkbutton(window, text='Channel?',variable=var3, onvalue=1, offvalue=0, command=c3)
 c3.pack()
+
+window.resizable(False, False)
 window.mainloop()
