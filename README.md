@@ -14,8 +14,8 @@ pip3 install install clipboard pytube moviepy
 # Screenshots
 Classic:
 
-![](https://funprogramming.eu/KVxXQC.png)
+![](https://funprogramming.eu/OJ0Xhl.png)
 
 Modern:
 
-![](https://funprogramming.eu/xXGu6r.png)
+![](https://funprogramming.eu/P9GH1W.png)
