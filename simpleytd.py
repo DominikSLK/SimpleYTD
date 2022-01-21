@@ -1,4 +1,5 @@
 # SimpleYTD by DominikSLK
+from pathlib import Path
 import tkinter as tk
 import os
 from moviepy.video.io.VideoFileClip import *
@@ -10,10 +11,17 @@ import threading
 import clipboard
 import unicodedata
 
+OUTPUT_PATH = Path(__file__).parent
+ASSETS_PATH = OUTPUT_PATH / Path("./assets")
+
+def relative_to_assets(path: str) -> Path:
+    return ASSETS_PATH / Path(path)
+
 a2 = "NO"
 textclbef = ""
 
 def on_closing():
+    window.destroy()
     exit()
 
 def download():  
@@ -210,8 +218,8 @@ a = threading.Thread(target=download, daemon = True)
 a.start()
 
 window = tk.Tk()
-window.title('Simple Youtube Downloader')
-window.iconphoto(False, tk.PhotoImage(file='icon.png'))
+window.title('Simple YouTube Downloader')
+window.iconphoto(False, tk.PhotoImage(file=relative_to_assets('icon.png')))
 window.protocol("WM_DELETE_WINDOW", on_closing)
 label = tk.Label(text="Link")
 entry = tk.Entry(width=95)
@@ -231,7 +239,7 @@ button.pack(pady=(10, 10))
 var1 = tk.IntVar()
 var2 = tk.IntVar()
 var3 = tk.IntVar()
-c1 = tk.Checkbutton(window, text='Convert to mp3?',variable=var1, onvalue=1, offvalue=0)
+c1 = tk.Checkbutton(window, text='Convert to MP3?',variable=var1, onvalue=1, offvalue=0)
 c1.pack()
 c2 = tk.Checkbutton(window, text='Playlist?',variable=var2, onvalue=1, offvalue=0, command=c2)
 c2.pack()

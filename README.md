@@ -1,5 +1,5 @@
-# Simple Youtube Downloader
-Simple Youtube Downloader
+# Simple YouTube Downloader
+Simple YouTube Downloader
 
 # Installation
 
@@ -12,4 +12,8 @@ pip3 install install clipboard pytube moviepy
 ```
 
 # Screenshots
-![](https://funprogramming.eu/NGIfHZ.png)
+Classic:
+![](https://funprogramming.eu/KVxXQC.png)
+
+Modern:
+![](https://funprogramming.eu/xXGu6r.png)
