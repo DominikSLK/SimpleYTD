@@ -1,4 +1,5 @@
 # SimpleYTD by DominikSLK
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import time
 import tkinter as tk
@@ -19,6 +20,7 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 a2 = "NO"
+a3 = "NO"
 textclbef = ""
 folderpath = ""
 checked1 = "NO"
@@ -31,6 +33,7 @@ def on_closing():
 
 def download():  
     global a2
+    global a3
     global textclbef
     global checked1
     global checked2
@@ -40,7 +43,7 @@ def download():
         if a2 == "YES":
             link = entry_1.get()
 
-            if ((checked2 == "NO") and (checked3 == "NO")):
+            if ((checked2 == "NO") and (checked3 == "NO") and (a3 != "YES") and (a3 != "YES")):
                 if((link.find("youtube")) != -1 and (link.find("watch") != -1)):
                     yt = YouTube(link)
                     canvas.itemconfigure(entry_bg_1, image=entry_image_1_disabled)
@@ -81,7 +84,7 @@ def download():
                     canvas.itemconfigure(entrylabel, text="Link", fill="black")
                     window.update()
 
-            if (checked2 == "YES"):
+            if ((checked2 == "YES") and (a3 != "YES")):
                 if(link.find("list") != -1):
                     canvas.itemconfigure(button1TXT, text="Downloading...")
                     window.update()
@@ -138,9 +141,58 @@ def download():
                     time.sleep(1)
                     canvas.itemconfigure(entrylabel, text="Link", fill="black")
                     window.update()
+            elif ((checked2 == "YES") and (a3 == "YES")):
+                if(link.find("list") != -1):
+                    canvas.itemconfigure(button3TXT, text="Getting list of videos...")
+                    window.update()
+                    playlist = Playlist(link)
+                    canvas.itemconfigure(entry_bg_1, image=entry_image_1_disabled)
+                    entry_1.config(state='disabled')
+                    clipboard.copy("")
+                    print('Number of videos in playlist: %s' % len(playlist.video_urls))
+                    canvas.itemconfigure(entrylabel, text='Number of videos in playlist: %s' % len(playlist.video_urls))
+                    window.update() 
+                    time.sleep(1)
+                    canvas.itemconfigure(entrylabel, text="Link")
+                    window.update() 
+                    playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)")
+                    print(len(playlist.video_urls))
 
-            if (checked3 == "YES"):
-                if(link.find("channel") != -1):
+                    if folderpath == "":
+                        list = open(playlist.title + ".txt", "w", encoding="utf-8")
+                    else:
+                        list = open(folderpath + "/" + playlist.title + ".txt", "w", encoding="utf-8")
+
+                    for url in playlist.video_urls:
+                        yt = YouTube(url)
+
+                        ys = yt.streams.get_lowest_resolution()
+
+                        list.write(ys.title + "\n")
+                        list.write(url + "\n")
+
+                    canvas.itemconfigure(button3TXT, text="Get list of videos")
+                    window.update()
+                    entry_1.delete(0, tk.END)
+
+                    canvas.itemconfigure(entrylabel, text="Created list of playlist " + playlist.title)
+                    window.update() 
+                    list.close()
+                    time.sleep(1)
+                    canvas.itemconfigure(entrylabel, text="Link")
+                else:
+                    canvas.itemconfigure(entrylabel, text="Not a playlist!", fill="red")
+                    canvas.itemconfigure(check2, image=checkimage)
+                    window.update()
+                    time.sleep(0.1)
+                    checked2 = "NO"
+                    window.update()
+                    time.sleep(1)
+                    canvas.itemconfigure(entrylabel, text="Link", fill="black")
+                    window.update()
+
+            if ((checked3 == "YES") and (a3 != "YES")):
+                if(link.find("/c") != -1):
                     canvas.itemconfigure(button1TXT, text="Downloading...")
                     window.update()
                     channel = Channel(link)
@@ -198,11 +250,61 @@ def download():
                     time.sleep(1)
                     canvas.itemconfigure(entrylabel, text="Link", fill="black")
                     window.update()
+            elif ((checked3 == "YES") and (a3 == "YES")):
+                if(link.find("/c") != -1):
+                    canvas.itemconfigure(button3TXT, text="Getting list of videos...")
+                    window.update()
+                    channel = Channel(link)
+                    canvas.itemconfigure(entry_bg_1, image=entry_image_1_disabled)
+                    entry_1.config(state='disabled')
+                    clipboard.copy("")
+                    print('Number of videos in channel: %s' % len(channel.video_urls))
+                    canvas.itemconfigure(entrylabel, text='Number of videos in channel: %s' % len(channel.video_urls))
+                    window.update() 
+                    time.sleep(1)
+                    canvas.itemconfigure(entrylabel, text="Link")
+                    window.update() 
+                    channel._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)")
+                    print(len(channel.video_urls))
+
+                    if folderpath == "":
+                        list = open(channel.channel_name + ".txt", "w", encoding="utf-8")
+                    else:
+                        list = open(folderpath + "/" + channel.channel_name + ".txt", "w", encoding="utf-8")
+
+                    for url in channel.video_urls:
+                        yt = YouTube(url)
+
+                        ys = yt.streams.get_lowest_resolution()
+
+                        list.write(ys.title + "\n")
+                        list.write(url + "\n")
+
+                    canvas.itemconfigure(button3TXT, text="Get list of videos")
+                    window.update()
+                    entry_1.delete(0, tk.END)
+
+                    canvas.itemconfigure(entrylabel, text="Created list of channel " + channel.channel_name)
+                    window.update() 
+                    list.close()
+                    time.sleep(1)
+                    canvas.itemconfigure(entrylabel, text="Link")
+                else:
+                    canvas.itemconfigure(entrylabel, text="Not a channel!", fill="red")
+                    canvas.itemconfigure(check3, image=checkimage)
+                    window.update()
+                    time.sleep(0.1)
+                    checked3 = "NO"
+                    window.update()
+                    time.sleep(1)
+                    canvas.itemconfigure(entrylabel, text="Link", fill="black")
+                    window.update()
 
             canvas.itemconfigure(entry_bg_1, image=entry_image_1)
             entry_1.config(state='normal')
             entry_1.delete(0, tk.END)
             a2 = "NO"
+            a3 = "NO"
 
 def download1(a):
     global a2
@@ -211,6 +313,16 @@ def download1(a):
     time.sleep(0.1)
     canvas.itemconfigure(button1, image=buttonimage)
     a2 = "YES"
+
+def download2(a):
+    global a3
+    global a2
+    canvas.itemconfigure(button3, image=buttonimagelongactive)
+    window.update()
+    time.sleep(0.1)
+    canvas.itemconfigure(button3, image=buttonlongimage)
+    a2 = "YES"
+    a3 = "YES"
 
 def ucheck1(a):
     global checked1
@@ -346,7 +458,7 @@ a.start()
 
 window = tk.Tk()
 
-window.geometry("714x370")
+window.geometry("714x414")
 window.configure(bg = "#C4C4C4")
 window.title('Simple YouTube Downloader')
 window.iconphoto(False, tk.PhotoImage(file=relative_to_assets('icon.png')))
@@ -430,6 +542,14 @@ button2TXT = canvas.create_text(357,button2height, text=button2text, font=("Sans
 canvas.tag_bind(button2, "<Button-1>", selectfolder)
 canvas.tag_bind(button2TXT, "<Button-1>", selectfolder)
 
+button3height = 260
+button3text = "Get list of videos"
+
+button3 = canvas.create_image(357,button3height, image=buttonlongimage, anchor='c')
+button3TXT = canvas.create_text(357,button3height, text=button3text, font=("Sans Serif", 14))
+canvas.tag_bind(button3, "<Button-1>", download2)
+canvas.tag_bind(button3TXT, "<Button-1>", download2)
+
 # check images
 checkimage = PhotoImage(
     file=relative_to_assets("check.png"))
@@ -438,7 +558,7 @@ checkedimage = PhotoImage(
 
 # check 1 begin
 checked1 = "NO"
-check1height = 260
+check1height = 310
 
 check1text = "Convert to MP3?"
 
@@ -455,7 +575,7 @@ canvas.tag_bind(check1TXT, "<Button-1>", ucheck1)
 
 # check 2 begin
 checked2 = "NO"
-check2height = 300
+check2height = 350
 
 check2text = "Playlist?"
 
@@ -472,7 +592,7 @@ canvas.tag_bind(check2TXT, "<Button-1>", ucheck2)
 
 # check 3 begin
 checked3 = "NO"
-check3height = 340
+check3height = 390
 
 check3text = "Channel?"
 

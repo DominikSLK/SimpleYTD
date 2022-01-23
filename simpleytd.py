@@ -1,4 +1,5 @@
 # SimpleYTD by DominikSLK
+# -*- coding: utf-8 -*-
 from pathlib import Path
 import tkinter as tk
 import os
@@ -18,6 +19,7 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 a2 = "NO"
+a3 = "NO"
 textclbef = ""
 folderpath = ""
 
@@ -27,6 +29,7 @@ def on_closing():
 
 def download():  
     global a2
+    global a3
     global textclbef
     global folderpath
     time.sleep(1)
@@ -35,7 +38,7 @@ def download():
             link = entry.get()
             
 
-            if ((var2.get() == 0) and (var3.get() == 0)):
+            if ((var2.get() == 0) and (var3.get() == 0) and (a3 != "YES")):
                 if((link.find("youtube")) != -1 and (link.find("watch") != -1)):
                     yt = YouTube(link)
                     entry.config(state='disabled')
@@ -77,7 +80,7 @@ def download():
                     label['text'] = "Link"
                     window.update()
 
-            if (var2.get() == 1):
+            if ((var2.get() == 1) and (a3 != "YES")):
                 if(link.find("list") != -1):
                     button['text'] = "Downloading..."
                     window.update()
@@ -132,9 +135,57 @@ def download():
                     label.config(fg="black")
                     label['text'] = "Link"
                     window.update()
+            elif ((var2.get() == 1) and (a3 == "YES")):
+                if(link.find("list") != -1):
+                    button3['text'] = "Getting list of videos..."
+                    window.update()
+                    playlist = Playlist(link)
+                    entry.config(state='disabled')
+                    clipboard.copy("")
+                    print('Number of videos in playlist: %s' % len(playlist.video_urls))
+                    label['text'] = 'Number of videos in playlist: %s' % len(playlist.video_urls)
+                    window.update() 
+                    time.sleep(1)
+                    label['text'] = "Link"
+                    window.update() 
+                    playlist._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)")
+                    print(len(playlist.video_urls))
 
-            if (var3.get() == 1):
-                if(link.find("channel") != -1):
+                    if folderpath == "":
+                        list = open(playlist.title + ".txt", "w", encoding="utf-8")
+                    else:
+                        list = open(folderpath + "/" + playlist.title + ".txt", "w", encoding="utf-8")
+
+                    for url in playlist.video_urls:
+                        yt = YouTube(url)
+
+                        ys = yt.streams.get_lowest_resolution()
+
+                        list.write(ys.title + "\n")
+                        list.write(url + "\n")
+
+                    button3['text'] = "Get list of videos"
+                    window.update()
+                    entry.delete(0, tk.END)
+
+
+                    label['text'] = "Created list of playlist " + playlist.title
+                    window.update() 
+                    list.close()
+                    time.sleep(1)
+                    label['text'] = "Link"
+                else:
+                    label.config(fg="red")
+                    label['text'] = "Not a playlist!"
+                    c2.deselect()
+                    window.update()
+                    time.sleep(1)
+                    label.config(fg="black")
+                    label['text'] = "Link"
+                    window.update()
+
+            if ((var3.get() == 1) and (a3 != "YES")):
+                if(link.find("/c") != -1):
                     button['text'] = "Downloading..."
                     window.update()
                     channel = Channel(link)
@@ -190,14 +241,69 @@ def download():
                     label.config(fg="black")
                     label['text'] = "Link"
                     window.update()
-   
+            elif ((var3.get() == 1) and (a3 == "YES")):
+                if(link.find("/c") != -1):
+                    button3['text'] = "Getting list of videos..."
+                    window.update()
+                    channel = Channel(link)
+                    entry.config(state='disabled')
+                    clipboard.copy("")
+                    print('Number of videos in channel: %s' % len(channel.video_urls))
+                    label['text'] = 'Number of videos in channel: %s' % len(channel.video_urls)
+                    window.update() 
+                    time.sleep(1)
+                    label['text'] = "Link"
+                    window.update() 
+                    channel._video_regex = re.compile(r"\"url\":\"(/watch\?v=[\w-]*)")
+                    print(len(channel.video_urls))
+
+                    if folderpath == "":
+                        list = open(channel.channel_name + ".txt", "w", encoding="utf-8")
+                    else:
+                        list = open(folderpath + "/" + channel.channel_name + ".txt", "w", encoding="utf-8")
+
+                    for url in channel.video_urls:
+                        yt = YouTube(url)
+
+                        ys = yt.streams.get_lowest_resolution()
+
+                        list.write(ys.title + "\n")
+                        list.write(url + "\n")
+
+                    button3['text'] = "Get list of videos"
+                    window.update()
+                    entry.delete(0, tk.END)
+
+
+                    label['text'] = "Created list of channel " + channel.channel_name
+                    window.update() 
+                    list.close()
+                    time.sleep(1)
+                    label['text'] = "Link"
+                else:
+                    label.config(fg="red")
+                    label['text'] = "Not a channel!"
+                    c3.deselect()
+                    window.update()
+                    time.sleep(1)
+                    label.config(fg="black")
+                    label['text'] = "Link"
+                    window.update()
+
             entry.config(state='normal')
             entry.delete(0, tk.END)
             a2 = "NO"
+            a3 = "NO"
 
 def download1():
     global a2
     a2 = "YES"
+
+def download2():
+    global a3
+    global a2
+    a2 = "YES"
+    a3 = "YES"
 
 def c2():
     c3.deselect()
@@ -281,7 +387,7 @@ entry = tk.Entry(width=95)
 label.pack()
 entry.pack()
 entry.bind("<Enter>", pastelink)
-window.geometry("600x200")
+window.geometry("600x240")
 name = entry.get()
 button = tk.Button(
     text="Download",
@@ -301,6 +407,15 @@ button2 = tk.Button(
     command=selectfolder
 )
 button2.pack(pady=(1, 10))
+button3 = tk.Button(
+    text="Get list of videos",
+    width=19,
+    height=1,
+    bg="grey",
+    fg="white",
+    command=download2
+)
+button3.pack(pady=(1, 10))
 var1 = tk.IntVar()
 var2 = tk.IntVar()
 var3 = tk.IntVar()
