@@ -5,10 +5,10 @@ Simple YouTube Downloader
 
 ```
 Windows:
-py -m pip install clipboard pytube moviepy
+py -m pip install clipboard git+https://github.com/DominikSLK/pytube moviepy
 
 Linux:
-pip3 install install clipboard pytube moviepy
+pip3 install install clipboard git+https://github.com/DominikSLK/pytube moviepy
 ```
 
 # Screenshots
