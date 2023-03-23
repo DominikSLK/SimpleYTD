@@ -56,7 +56,7 @@ def download():
                         button['text'] = "Converting..."
                         window.update()
                         video = VideoFileClip(os.path.join(folderpath,"",f"{videonameok}.mp4"))
-                        video.audio.write_audiofile(os.path.join(folderpath,"",f"{videonameok}.mp3"))
+                        video.audio.write_audiofile(os.path.join(folderpath,"",f"{videonameok}.mp3"), logger=None)
 
                     button['text'] = "Download"
                     window.update()
@@ -111,7 +111,7 @@ def download():
                             button['text'] = "Converting..."
                             window.update()
                             video = VideoFileClip(os.path.join(folderpath,"",f"{videonameok}.mp4"))
-                            video.audio.write_audiofile(os.path.join(folderpath,"",f"{videonameok}.mp3"))
+                            video.audio.write_audiofile(os.path.join(folderpath,"",f"{videonameok}.mp3"), logger=None)
 
                         button['text'] = "Download"
                         window.update()
@@ -217,7 +217,7 @@ def download():
                             button['text'] = "Converting..."
                             window.update()
                             video = VideoFileClip(os.path.join(folderpath,"",f"{videonameok}.mp4"))
-                            video.audio.write_audiofile(os.path.join(folderpath,"",f"{videonameok}.mp3"))
+                            video.audio.write_audiofile(os.path.join(folderpath,"",f"{videonameok}.mp3"), logger=None)
 
                         button['text'] = "Download"
                         window.update()
