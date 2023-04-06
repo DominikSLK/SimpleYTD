@@ -185,7 +185,7 @@ def download():
                     window.update()
 
             if ((var3.get() == 1) and (a3 != "YES")):
-                if(link.find("/c") != -1):
+                if (link.find("/c") != -1) or (link.find("/@") != -1):
                     button['text'] = "Downloading..."
                     window.update()
                     channel = Channel(link)
@@ -242,7 +242,7 @@ def download():
                     label['text'] = "Link"
                     window.update()
             elif ((var3.get() == 1) and (a3 == "YES")):
-                if(link.find("/c") != -1):
+                if (link.find("/c") != -1) or (link.find("/@") != -1):
                     button3['text'] = "Getting list of videos..."
                     window.update()
                     channel = Channel(link)

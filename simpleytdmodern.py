@@ -192,7 +192,7 @@ def download():
                     window.update()
 
             if ((checked3 == "YES") and (a3 != "YES")):
-                if(link.find("/c") != -1):
+                if (link.find("/c") != -1) or (link.find("/@") != -1):
                     canvas.itemconfigure(button1TXT, text="Downloading...")
                     window.update()
                     channel = Channel(link)
@@ -251,7 +251,7 @@ def download():
                     canvas.itemconfigure(entrylabel, text="Link", fill="black")
                     window.update()
             elif ((checked3 == "YES") and (a3 == "YES")):
-                if(link.find("/c") != -1):
+                if (link.find("/c") != -1) or (link.find("/@") != -1):
                     canvas.itemconfigure(button3TXT, text="Getting list of videos...")
                     window.update()
                     channel = Channel(link)
