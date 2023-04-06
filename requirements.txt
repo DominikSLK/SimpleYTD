@@ -1,0 +1,4 @@
+clipboard
+moviepy
+git+https://github.com/DominikSLK/pytube
+git+https://github.com/DominikSLK/CustomTkinter

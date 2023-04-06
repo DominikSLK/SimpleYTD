@@ -1,21 +1,16 @@
 # Simple YouTube Downloader
-Simple YouTube Downloader
+Simple YouTube Downloader v2
+This version is still not done!
 
 # Installation
 
 ```
 Windows:
-py -m pip install clipboard git+https://github.com/DominikSLK/pytube moviepy
+py -m pip install -r requirements.txt
 
 Linux:
-pip3 install install clipboard git+https://github.com/DominikSLK/pytube moviepy
+pip3 install -r requirements.txt
 ```
 
 # Screenshots
-Classic:
-
-![](https://funprogramming.eu/n8N3Ou.png)
-
-Modern:
-
-![](https://funprogramming.eu/8ZCoSH.png)
+![](https://funprogramming.eu/H3hqp1.png)
