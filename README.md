@@ -1,6 +1,8 @@
 # Simple YouTube Downloader
 Simple YouTube Downloader
 
+You can find latest `.exe` file [here](https://ci.funprogramming.eu/job/SimpleYTD%20v1/)
+
 # Installation
 
 ```
