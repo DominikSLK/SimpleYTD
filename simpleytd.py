@@ -482,7 +482,7 @@ class SimpleYTD(customtkinter.CTk):
 
     def on_closing(self):
         self.destroy()
-        exit()
+        sys.exit()
 
 if __name__ == "__main__":
     logger = PrintLogger()
