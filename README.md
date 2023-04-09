@@ -3,6 +3,8 @@ Simple YouTube Downloader v2
 
 This version is still not done!
 
+You can find latest `.exe` file [here](https://ci.funprogramming.eu/job/SimpleYTD%20v2/)
+
 # Installation
 
 ```
