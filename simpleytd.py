@@ -137,7 +137,11 @@ def download_video(url):
     global adding_done
 
     yt = YouTube(url, on_progress_callback=progress_function)
-    clipboard.copy("")
+
+    try:
+        clipboard.copy("")
+    except:
+        pass
 
     ys = yt.streams.get_highest_resolution()
 
