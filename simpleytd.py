@@ -137,12 +137,16 @@ def progress_function(chunk, file_handle, bytes_remaining):
     if not percent == None:
         percent_labels[chunk.default_filename].configure(text=percent + "%")
 
+def complete_function(chunk, file_name):
+    progress_bars[chunk.default_filename].set(1)
+    percent_labels[chunk.default_filename].configure(text="100%")
+
 def download_video(url):    
     global pb_count
     global progress_bars
     global adding_done
 
-    yt = YouTube(url, on_progress_callback=progress_function)
+    yt = YouTube(url, on_progress_callback=progress_function, on_complete_callback=complete_function)
 
     try:
         clipboard.copy("")
@@ -286,11 +290,6 @@ def download_work():
     if ((app.is_playlist.get() == 0) and (app.is_channel.get() == 0) and (not get_list_of_videos)):
         if (((link.find("youtube") != -1) and (link.find("watch") != -1)) or (link.find("youtu.be") != 1)):
             download_video(link)
-
-            progress_bars[queue[link]].set(1)
-            percent_labels[queue[link]].configure(text="100%")
-
-            videonameok = queue[link].replace(".mp4", "")
 
             app.entry.delete(0, tk.END)
         else:
