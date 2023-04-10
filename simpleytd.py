@@ -491,7 +491,7 @@ class SimpleYTD(customtkinter.CTk):
 
     def pastelink(self, event):
         clipboard_text = clipboard.paste()
-        if (clipboard_text.find("youtube") != -1 or clipboard_text.find("youtu.be") !=1):
+        if (clipboard_text.find("youtube") != -1 or clipboard_text.find("youtu.be") != -1):
             self.entry.delete(0, tk.END)
             self.entry.insert(0, clipboard_text)
             self.update()
