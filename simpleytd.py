@@ -200,7 +200,7 @@ def download_work():
         with open(app.videos_file, "r") as f:
             urls = []
             for i in f.readlines():
-                if "youtube" in i:
+                if ("youtube" in i) or ("youtu.be" in i) :
                     urls.append(i)
             
             list_download(urls)
@@ -284,7 +284,7 @@ def download_work():
             
     # normal video
     if ((app.is_playlist.get() == 0) and (app.is_channel.get() == 0) and (not get_list_of_videos)):
-        if((link.find("youtube")) != -1 and (link.find("watch") != -1)):
+        if (((link.find("youtube") != -1) and (link.find("watch") != -1)) or (link.find("youtu.be") != 1)):
             download_video(link)
 
             progress_bars[queue[link]].set(1)
@@ -491,7 +491,7 @@ class SimpleYTD(customtkinter.CTk):
 
     def pastelink(self, event):
         clipboard_text = clipboard.paste()
-        if(clipboard_text.find("youtube") != -1):
+        if (clipboard_text.find("youtube") != -1 or clipboard_text.find("youtu.be") !=1):
             self.entry.delete(0, tk.END)
             self.entry.insert(0, clipboard_text)
             self.update()
