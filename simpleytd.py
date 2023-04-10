@@ -43,9 +43,11 @@ class ToolTip():
         self.widget.bind("<ButtonPress>", self.leave)
         self.id = None
         self.tw = None
+        self.is_active = True
 
     def enter(self, event=None):
-        self.schedule()
+        if self.is_active:
+            self.schedule()
 
     def leave(self, event=None):
         self.unschedule()
@@ -84,6 +86,10 @@ class ToolTip():
 
     def set_text(self, text):
         self.text = text
+    
+    def destroy(self):
+        self.is_active = False
+        self.hidetip()
 
 class PrintLogger():
     def __init__(self):
@@ -188,6 +194,23 @@ def download_work():
     global get_list_of_videos
 
     link = app.entry.get()
+
+    # list of videos from file
+    if (app.from_file):
+        with open(app.videos_file, "r") as f:
+            urls = []
+            for i in f.readlines():
+                if "youtube" in i:
+                    urls.append(i)
+            
+            list_download(urls)
+
+        app.from_file = False
+        app.videos_file = None
+        app.videos_file_tooltip.destroy()
+        app.videos_file_tooltip = None
+
+        return
 
     # get list of videos
     if (((app.is_playlist.get() == 1) or (app.is_channel.get() == 1)) and (get_list_of_videos)):
@@ -303,7 +326,7 @@ def download_work():
             app.label.configure(text="Link", text_color="white")
             app.update() 
 
-            playlist_download_thread = threading.Thread(target=playlist_download, daemon = True, args=[playlist])
+            playlist_download_thread = threading.Thread(target=list_download, daemon = True, args=[playlist.video_urls])
             playlist_download_thread.start()
 
             app.entry.delete(0, tk.END)
@@ -315,8 +338,8 @@ def download_work():
             app.label.configure(text="Link", text_color="white")
             app.update()
 
-def playlist_download(playlist: Playlist):
-    for url in playlist.video_urls:
+def list_download(list):
+    for url in list:
         time.sleep(1.5)
         download_thread = threading.Thread(target=download_video, daemon = True, args=[url])
         download_thread.start()
@@ -351,7 +374,7 @@ class SimpleYTD(customtkinter.CTk):
         self.button_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
         self.button_frame.grid(row=0, column=0, pady=(0, 0), sticky="nsew")
         self.button_frame.grid_columnconfigure(0, weight=1)
-        self.button_frame.grid_rowconfigure(4, weight=1)    
+        self.button_frame.grid_rowconfigure(5, weight=1)    
 
         self.logo_label = customtkinter.CTkLabel(self.button_frame, text="SimpleYTD", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 30))
@@ -376,6 +399,13 @@ class SimpleYTD(customtkinter.CTk):
             command=lambda: start_work(True),
         )
         self.get_list_of_videos_btn.grid(row=3, column=0, pady=(5, 0))
+
+        self.get_videos_from_file_btn = customtkinter.CTkButton(
+            master=self.button_frame,
+            text="Get videos from file",
+            command=self.download_from_file,
+        )
+        self.get_videos_from_file_btn.grid(row=4, column=0, pady=(5, 0))
 
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
@@ -436,14 +466,28 @@ class SimpleYTD(customtkinter.CTk):
         self.box_visible = False
         self.download_tooltip = None
         self.folderpath = ""
+        self.from_file = False
+        self.videos_file = None
+        self.videos_file_tooltip = None
     
+    def download_from_file(self):
+        self.from_file = True
+        file = filedialog.askopenfile(filetypes=[("Text files", "*.txt")])
+        if file != None:
+            self.videos_file = os.path.abspath(file.name)
+            text = "Selected file: " + self.videos_file
+            if not self.videos_file_tooltip == None:
+                self.videos_file_tooltip.set_text(text)
+            else:
+                self.videos_file_tooltip = ToolTip(self.get_videos_from_file_btn, text)
+
     def selectfolder(self):
         self.folderpath = filedialog.askdirectory(mustexist=False)
         text = "Selected folder: " + self.folderpath
-        if not app.download_tooltip == None:
-            app.download_tooltip.set_text(text)
+        if not self.download_tooltip == None:
+            self.download_tooltip.set_text(text)
         else:
-            app.download_tooltip = ToolTip(app.select_folder_btn, text)
+            self.download_tooltip = ToolTip(self.select_folder_btn, text)
 
     def pastelink(self, event):
         clipboard_text = clipboard.paste()
