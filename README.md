@@ -16,4 +16,4 @@ pip3 install -r requirements.txt
 ```
 
 # Screenshots
-![](https://funprogramming.eu/rW36Gc.png)
+![](https://funprogramming.eu/of2Key.png)
