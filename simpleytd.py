@@ -14,7 +14,7 @@ import customtkinter
 import sys
 from proglog import TqdmProgressBarLogger
 
-customtkinter.set_appearance_mode("Dark") 
+customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("blue")
 
 OUTPUT_PATH = Path(__file__).parent
@@ -356,7 +356,12 @@ class SimpleYTD(customtkinter.CTk):
 
         # configure window
         self.title("SimpleYTD")
-        self.geometry("1000x600")
+
+        w = 1000
+        h = 600
+
+        self.geometry(f'{w}x{h}+{int((self.winfo_screenwidth()/2) - (w/2))}+{int((self.winfo_screenheight()/2) - (h/2))}')
+        self.minsize(800, 400)
         self.iconphoto(False, tk.PhotoImage(file=relative_to_assets('icon.png')))
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
@@ -367,13 +372,14 @@ class SimpleYTD(customtkinter.CTk):
 
         # create sidebar frame with widgets
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
-        self.sidebar_frame.grid(row=1, column=0, rowspan=3, sticky="nsew")
-        self.sidebar_frame.grid_rowconfigure(4, weight=1)
+        self.sidebar_frame.grid(row=0, column=0, rowspan=3, sticky="nsew")
+        self.sidebar_frame.grid_rowconfigure(3, weight=1)
 
-        self.button_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
-        self.button_frame.grid(row=0, column=0, pady=(0, 0), sticky="nsew")
+        # create frame with buttons and logo
+        self.button_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.button_frame.grid(row=0, column=0, pady=(0, 0), sticky="new")
         self.button_frame.grid_columnconfigure(0, weight=1)
-        self.button_frame.grid_rowconfigure(5, weight=1)    
+        self.button_frame.grid_rowconfigure(5, weight=1)
 
         self.logo_label = customtkinter.CTkLabel(self.button_frame, text="SimpleYTD", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 30))
@@ -383,28 +389,28 @@ class SimpleYTD(customtkinter.CTk):
             text="Download",
             command=start_work,
         )
-        self.download_btn.grid(row=1, column=0, pady=(5, 0))
+        self.download_btn.grid(row=1, column=0, padx=15, pady=(5, 0), sticky="ew")
 
         self.select_folder_btn = customtkinter.CTkButton(
             master=self.button_frame,
             text="Select Download Folder",
             command=self.selectfolder,
         )
-        self.select_folder_btn.grid(row=2, column=0, pady=(5, 0))
+        self.select_folder_btn.grid(row=2, column=0, padx=15, pady=(5, 0), sticky="ew")
 
         self.get_list_of_videos_btn = customtkinter.CTkButton(
             master=self.button_frame,
             text="Get list of videos",
             command=lambda: start_work(True),
         )
-        self.get_list_of_videos_btn.grid(row=3, column=0, pady=(5, 0))
+        self.get_list_of_videos_btn.grid(row=3, column=0, padx=15, pady=(5, 0), sticky="ew")
 
         self.get_videos_from_file_btn = customtkinter.CTkButton(
             master=self.button_frame,
             text="Get videos from file",
             command=self.download_from_file,
         )
-        self.get_videos_from_file_btn.grid(row=4, column=0, pady=(5, 0))
+        self.get_videos_from_file_btn.grid(row=4, column=0, padx=15, pady=(5, 0), sticky="ew")
 
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(10, 0))
@@ -418,26 +424,27 @@ class SimpleYTD(customtkinter.CTk):
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(5, 20))
 
         self.entry_frame = customtkinter.CTkFrame(self, fg_color="transparent")
-        self.entry_frame.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.entry_frame.grid_columnconfigure(0, weight=1)     
+        self.entry_frame.grid(row=0, column=1, rowspan=3, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.entry_frame.grid_columnconfigure(0, weight=1)
+        self.entry_frame.grid_rowconfigure(3, weight=1)
 
         self.label = customtkinter.CTkLabel(self.entry_frame, text="Link", anchor="w")
         self.label.grid(row=0, column=0, padx=20, pady=(0, 0))
-        self.entry = customtkinter.CTkEntry(self.entry_frame, width=550)
-        self.entry.grid(row=1, column=0)
+        self.entry = customtkinter.CTkEntry(self.entry_frame)
+        self.entry.grid(row=1, column=0, sticky="nsew")
         self.entry.bind("<Enter>", self.pastelink)
 
-        # create textbox (for debugging)
-        self.textbox = customtkinter.CTkTextbox(self, width=250, font=('Courier', 12))
+        # create textbox (console for debugging)
+        self.textbox = customtkinter.CTkTextbox(self.entry_frame, width=250, font=('Courier', 12))
         
         # create queue frame
         self.queue_frame = customtkinter.CTkScrollableFrame(self.entry_frame)
-        self.queue_frame.grid(row=2, column=0, padx=(0, 0), pady=(20, 0), sticky="nsew")
+        self.queue_frame.grid(row=2, column=0, rowspan=2, padx=(0, 0), pady=(20, 20), sticky="nsew")
         self.queue_frame.grid_columnconfigure(0, weight=1)
 
         # create options frame
         self.options_frame = customtkinter.CTkScrollableFrame(self, label_text="Options")
-        self.options_frame.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
+        self.options_frame.grid(row=0, column=2, rowspan=3, padx=(20, 10), pady=(20, 20), sticky="nsew")
         self.options_frame.grid_columnconfigure(0, weight=1)
 
         self.convert_to_mp3 = customtkinter.CTkSwitch(master=self.options_frame, text="Convert to MP3?")
@@ -460,6 +467,7 @@ class SimpleYTD(customtkinter.CTk):
         self.appearance_mode_optionemenu.set("Dark")
         self.scaling_optionemenu.set("100%")
         self.textbox.configure(state="disabled")
+        self.options_frame._scrollbar.grid_remove()
 
         self.timer_active = False
         self.box_visible = False
@@ -513,10 +521,14 @@ class SimpleYTD(customtkinter.CTk):
         if (x > (self._current_width - 20) and y > (self._current_height - 20)) and (x < self._current_width and y < self._current_height):
             if self.timer_active:
                 if not self.box_visible:
-                    self.textbox.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
+                    self.textbox.grid(row=3, column=0, padx=(0, 0), pady=(0, 20), sticky="nsew")
+                    self.queue_frame.grid_remove()
+                    self.queue_frame.grid(row=2, column=0, rowspan=1, padx=(0, 0), pady=(20, 20), sticky="nsew")
                     self.box_visible = True
                 else:
                     self.textbox.grid_remove()
+                    self.queue_frame.grid_remove()
+                    self.queue_frame.grid(row=2, column=0, rowspan=2, padx=(0, 0), pady=(20, 20), sticky="nsew")
                     self.box_visible = False
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
