@@ -482,11 +482,12 @@ class SimpleYTD(customtkinter.CTk):
 
     def selectfolder(self):
         self.folderpath = filedialog.askdirectory(mustexist=False)
-        text = "Selected folder: " + self.folderpath
-        if not self.download_tooltip == None:
-            self.download_tooltip.set_text(text)
-        else:
-            self.download_tooltip = ToolTip(self.select_folder_btn, text)
+        if self.folderpath != "":
+            text = "Selected folder: " + self.folderpath
+            if not self.download_tooltip == None:
+                self.download_tooltip.set_text(text)
+            else:
+                self.download_tooltip = ToolTip(self.select_folder_btn, text)
 
     def pastelink(self, event):
         clipboard_text = clipboard.paste()
