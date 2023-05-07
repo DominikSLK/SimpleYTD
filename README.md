@@ -7,10 +7,10 @@ You can find latest `.exe` file [here](https://ci.funprogramming.eu/job/SimpleYT
 
 ```
 Windows:
-py -m pip install clipboard git+https://github.com/DominikSLK/pytube moviepy
+py -m pip install -r requirements.txt
 
 Linux:
-pip3 install install clipboard git+https://github.com/DominikSLK/pytube moviepy
+pip3 install install -r requirements.txt
 ```
 
 # Screenshots
