@@ -30,7 +30,6 @@ pb_labels = {}
 progress_bars = {}
 percent_labels = {}
 pb_count = 0
-adding_done = True
 
 class ToolTip():
     def __init__(self, widget, text='widget info'):
@@ -144,7 +143,6 @@ def complete_function(chunk, file_name):
 def download_video(url):    
     global pb_count
     global progress_bars
-    global adding_done
 
     yt = YouTube(url, on_progress_callback=progress_function, on_complete_callback=complete_function)
 
@@ -157,23 +155,25 @@ def download_video(url):
 
     queue[url] = ys.default_filename
 
-    pb_label = customtkinter.CTkLabel(app.queue_frame, text=ys.default_filename, anchor="w")
-    pb_label.grid(row=pb_count, column=0, padx=0, pady=0, columnspan=2)
-    progressbar = customtkinter.CTkProgressBar(app.queue_frame)
-    progressbar.grid(row=pb_count+1, column=0, padx=(10, 10), pady=(0, 10), sticky="ew")
+    pb_frame = customtkinter.CTkFrame(app.queue_frame)
+    pb_frame.grid(row=pb_count, column=0, padx=(0, 0), pady=(0, 0), sticky="ew")
+    pb_frame.grid_columnconfigure(0, weight=1)
 
-    percent_label = customtkinter.CTkLabel(app.queue_frame, text="0%", anchor="n")
-    percent_label.grid(row=pb_count+1, column=1, padx=0, pady=0)
+    pb_label = customtkinter.CTkLabel(pb_frame, text=ys.default_filename, anchor="w")
+    pb_label.grid(row=0, column=0, padx=0, pady=0, columnspan=2)
+    progressbar = customtkinter.CTkProgressBar(pb_frame)
+    progressbar.grid(row=1, column=0, padx=(10, 10), pady=(0, 10), sticky="ew")
 
-    pb_count += 2
+    percent_label = customtkinter.CTkLabel(pb_frame, text="0%", anchor="n")
+    percent_label.grid(row=1, column=1, padx=0, pady=0)
+
+    pb_count += 1
 
     progressbar.set(0)
 
     progress_bars[ys.default_filename] = progressbar
     percent_labels[ys.default_filename] = percent_label
     pb_labels[ys.default_filename] = pb_label
-
-    adding_done = True
 
     app.update()
 
