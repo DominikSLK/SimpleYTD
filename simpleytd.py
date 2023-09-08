@@ -457,8 +457,8 @@ class SimpleYTD(customtkinter.CTk):
         self.is_channel.grid(row=2, column=0, padx=10, pady=(0, 20))
 
         # only one can be selected at a time
-        self.is_playlist.configure(command=self.is_channel.deselect)
-        self.is_channel.configure(command=self.is_playlist.deselect)
+        self.is_playlist.configure(command=lambda: (self.is_channel.deselect(), self.disable_get_video_list_btn()))
+        self.is_channel.configure(command=lambda: (self.is_playlist.deselect(), self.disable_get_video_list_btn()))
 
         # register on click event
         self.bind("<Button-1>", self.on_click)
@@ -476,6 +476,13 @@ class SimpleYTD(customtkinter.CTk):
         self.from_file = False
         self.videos_file = None
         self.videos_file_tooltip = None
+        self.disable_get_video_list_btn()
+    
+    def disable_get_video_list_btn(self):
+        if ((self.is_playlist.get() == 1) or (self.is_channel.get() == 1)):
+            self.get_list_of_videos_btn.configure(state="normal")
+        else:
+            self.get_list_of_videos_btn.configure(state="disabled")
     
     def download_from_file(self):
         self.from_file = True
