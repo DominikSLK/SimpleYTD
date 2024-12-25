@@ -5,7 +5,7 @@ import time
 import tkinter as tk
 import os
 from moviepy.video.io.VideoFileClip import *
-from pytube import YouTube, Playlist, Channel
+from pytubefix import YouTube, Playlist, Channel
 from tkinter import *
 import time
 import re

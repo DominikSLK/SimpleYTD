@@ -1,3 +1,3 @@
 clipboard
-moviepy
-https://github.com/DominikSLK/pytube/archive/refs/heads/fix-8.zip
+moviepy==1.0.3
+pytubefix
