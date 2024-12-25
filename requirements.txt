@@ -1,4 +1,4 @@
 clipboard
-moviepy
+moviepy==1.0.3
 pytubefix
 https://github.com/DominikSLK/CustomTkinter/archive/refs/heads/master.zip
