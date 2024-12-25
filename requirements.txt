@@ -1,4 +1,4 @@
 clipboard
 moviepy
-https://github.com/DominikSLK/pytube/archive/refs/heads/fix-8.zip
+pytubefix
 https://github.com/DominikSLK/CustomTkinter/archive/refs/heads/master.zip

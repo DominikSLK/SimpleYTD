@@ -4,7 +4,7 @@ from pathlib import Path
 import tkinter as tk
 import os
 from moviepy.video.io.VideoFileClip import *
-from pytube import YouTube, Playlist, Channel
+from pytubefix import YouTube, Playlist, Channel
 from tkinter import *
 import time
 import threading
@@ -13,6 +13,7 @@ from tkinter import filedialog
 import customtkinter
 import sys
 from proglog import TqdmProgressBarLogger
+from moviepy.video.io.ffmpeg_tools import ffmpeg_merge_video_audio
 
 customtkinter.set_appearance_mode("Dark")
 customtkinter.set_default_color_theme("blue")
@@ -132,13 +133,19 @@ class BarLogger(TqdmProgressBarLogger):
 def progress_function(chunk, file_handle, bytes_remaining):
     current = ((chunk.filesize - bytes_remaining)/chunk.filesize)
     percent = ('{0:.1f}').format(current*100)
-    progress_bars[chunk.default_filename].set(current)
-    if not percent == None:
-        percent_labels[chunk.default_filename].configure(text=percent + "%")
+    try:
+        progress_bars[chunk.default_filename].set(current)
+        if not percent == None:
+            percent_labels[chunk.default_filename].configure(text=percent + "%")
+    except:
+        pass
 
 def complete_function(chunk, file_name):
-    progress_bars[chunk.default_filename].set(1)
-    percent_labels[chunk.default_filename].configure(text="100%")
+    try:
+        progress_bars[chunk.default_filename].set(1)
+        percent_labels[chunk.default_filename].configure(text="100%")
+    except:
+        pass
 
 def download_video(url):    
     global pb_count
@@ -177,7 +184,25 @@ def download_video(url):
 
     app.update()
 
-    ys.download(app.folderpath)
+    if ys.is_progressive:
+        video_stream = yt.streams.filter(file_extension="mp4", only_video=True).order_by('resolution').desc().first()
+        audio_stream = yt.streams.filter(only_audio=True).order_by('abr').desc().first()
+
+        if not video_stream or not audio_stream:
+            raise Exception('No suitable video or audio streams found.')
+
+        print(f"Downloading video in resolution: {video_stream.resolution}")
+        print(f"Downloading audio with bitrate: {audio_stream.abr}")
+
+        video_path = video_stream.download(output_path=app.folderpath, filename=video_stream.default_filename.replace(".mp4", "") + "_noaudio" +".mp4")
+        audio_path = audio_stream.download(output_path=app.folderpath, filename=audio_stream.default_filename)
+
+        ffmpeg_merge_video_audio(video_path, audio_path, (app.folderpath + os.sep if app.folderpath != "" else "") + ys.default_filename, vcodec='copy', acodec='mp3', ffmpeg_output=False, logger=None)
+
+        os.remove(video_path)
+        os.remove(audio_path)
+    else:
+        ys.download(app.folderpath)
 
     if (app.convert_to_mp3.get() == 1):
         convert_to_mp3(ys.default_filename)
